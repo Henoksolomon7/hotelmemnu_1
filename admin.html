@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Royal Hotel</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .admin-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .admin-panel {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            overflow: hidden;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .admin-header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-nav {
+            background: #34495e;
+            padding: 15px 40px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .admin-nav button {
+            background: none;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .admin-nav button.active,
+        .admin-nav button:hover {
+            background: #3498db;
+        }
+
+        .admin-content {
+            padding: 40px;
+            min-height: 500px;
+        }
+
+        .admin-section {
+            display: none;
+        }
+
+        .admin-section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-to-menu {
+            color: #3498db;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .back-to-menu:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container" id="adminContainer">
+        <!-- Login Form -->
+        <div class="login-form" id="loginForm">
+            <div class="login-box">
+                <h2><i class="fas fa-lock"></i> Admin Login</h2>
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="adminUsername" placeholder="Username" value="admin">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="adminPassword" placeholder="Password" value="admin123">
+                    <i class="fas fa-eye toggle-password" onclick="togglePassword('adminPassword', this)"></i>
+                </div>
+                <button onclick="adminLogin()" class="btn-login">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <p class="login-note">Default credentials: admin / admin123</p>
+                <a href="index.html" class="back-to-menu">
+                    <i class="fas fa-arrow-left"></i> Back to Menu
+                </a>
+            </div>
+        </div>
+
+        <!-- Admin Panel (Hidden Initially) -->
+        <div class="admin-panel" id="adminPanel" style="display: none;">
+            <div class="admin-header">
+                <div>
+                    <h2><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h2>
+                    <p>Welcome, <span id="adminName">Administrator</span></p>
+                </div>
+                <div>
+                    <button onclick="logoutAdmin()" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <div class="admin-nav">
+         <button onclick="showSection('dashboard', this)" class="active">
+    <i class="fas fa-tachometer-alt"></i> Dashboard
+</button>
+<button onclick="showSection('menu', this)">
+    <i class="fas fa-utensils"></i> Manage Menu
+</button>
+<button onclick="showSection('categories', this)">
+    <i class="fas fa-tags"></i> Categories
+</button>
+ <button onclick="showSection('tables', this)">
+        <i class="fas fa-chair"></i> Tables & QR
+    </button>
+<button onclick="showSection('orders', this)">
+    <i class="fas fa-shopping-cart"></i> Orders
+</button>
+<button onclick="showSection('settings', this)">
+    <i class="fas fa-cog"></i> Settings
+</button>
+            </div>
+
+            <div class="admin-content">
+                <!-- Dashboard Section -->
+                <div id="dashboardSection" class="admin-section active">
+                    <h3><i class="fas fa-chart-bar"></i> Dashboard Overview</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <i class="fas fa-utensils"></i>
+                            <h4>Total Items</h4>
+                            <p id="totalItems">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-tags"></i>
+                            <h4>Categories</h4>
+                            <p id="totalCategories">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-fire"></i>
+                            <h4>Specials</h4>
+                            <p id="totalSpecials">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-shopping-cart"></i>
+                            <h4>Today's Orders</h4>
+                            <p id="todayOrders">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+    <i class="fas fa-chair"></i>
+    <h4>Tables</h4>
+    <p id="totalTables">0</p>
+</div>
+                </div>
+
+                <!-- Manage Menu Section -->
+                <div id="menuSection" class="admin-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-utensils"></i> Manage Menu Items</h3>
+                        <button onclick="openAddItemModal()" class="btn-add">
+                            <i class="fas fa-plus"></i> Add New Item
+                        </button>
+                    </div>
+                    <div class="items-table-container">
+                        <table class="items-table">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Special</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="menuItemsTable">
+                                <!-- Menu items will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Categories Section -->
+                <div id="categoriesSection" class="admin-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-tags"></i> Manage Categories</h3>
+                        <button onclick="openAddCategoryModal()" class="btn-add">
+                            <i class="fas fa-plus"></i> Add Category
+                        </button>
+                    </div>
+                    <div class="categories-grid" id="adminCategoriesGrid">
+                        <!-- Categories will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Orders Section -->
+       <div id="ordersSection" class="admin-section">
+    <div class="section-header">
+        <h3><i class="fas fa-shopping-cart"></i> Recent Orders</h3>
+        <button onclick="renderOrdersList()" class="btn-add">
+            <i class="fas fa-sync"></i> Refresh
+        </button>
+    </div>
+    <div class="orders-list" id="ordersList">
+        <!-- Orders will be loaded here -->
+    </div>
+</div>
+<!-- Tables Section -->
+<div id="tablesSection" class="admin-section">
+    <div class="section-header">
+        <h3><i class="fas fa-chair"></i> Manage Tables & QR Codes</h3>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button onclick="printAllQRCodes()" class="btn-add" style="background:#9b59b6;">
+                <i class="fas fa-print"></i> Print All QR Codes
+            </button>
+            <button onclick="openAddTableModal()" class="btn-add">
+                <i class="fas fa-plus"></i> Add New Table
+            </button>
+        </div>
+    </div>
+
+    <div class="tables-grid" id="tablesGrid">
+        <!-- Tables will be loaded here -->
+    </div>
+</div>
+
+                <!-- Settings Section -->
+                <div id="settingsSection" class="admin-section">
+                    <h3><i class="fas fa-cog"></i> Settings</h3>
+                    <div class="settings-form">
+                        <div class="input-group">
+                            <label>Hotel Name</label>
+                            <input type="text" id="hotelName" placeholder="Hotel Name">
+                        </div>
+                        <div class="input-group">
+                            <label>Default Currency</label>
+                            <select id="currency">
+                                <option value="$">USD ($)</option>
+                                <option value="€">Euro (€)</option>
+                                <option value="£">Pound (£)</option>
+                                <option value="₹">Rupee (₹)</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Tax Rate (%)</label>
+                            <input type="number" id="taxRate" min="0" max="50" step="0.1" value="10">
+                        </div>
+                        <button onclick="saveSettings()" class="btn-save">
+                            <i class="fas fa-save"></i> Save Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   <!-- Add Item Modal -->
+<div id="addItemModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-plus"></i> Add New Menu Item</h3>
+            <button type="button" onclick="closeModal()" class="close-modal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="itemForm" onsubmit="return saveItem(event)">
+                <div class="form-group">
+                    <label>Item Image *</label>
+                    <div class="image-upload-container">
+                        <!-- Image Preview -->
+                        <div class="image-preview" id="imagePreview">
+                            <img id="previewImage" src="" alt="Preview">
+                            <div class="image-preview-placeholder" id="imagePlaceholder">
+                                <i class="fas fa-image"></i>
+                                <span>No image selected</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Upload Options -->
+                        <div class="upload-options">
+                            <!-- Option 1: URL Input -->
+                            <div class="upload-option">
+                                <label><i class="fas fa-link"></i> Enter Image URL</label>
+                                <input type="text" id="itemImageUrl" placeholder="https://example.com/image.jpg" 
+                                       oninput="updateImagePreview(this.value)">
+                                <small class="help-text">Enter a direct image URL</small>
+                            </div>
+                            
+                            <!-- Option 2: File Upload -->
+                            <div class="upload-option">
+                                <label><i class="fas fa-upload"></i> Upload Image</label>
+                                <input type="file" id="itemImageFile" accept="image/*" 
+                                       onchange="handleImageUpload(this)">
+                                <small class="help-text">Upload from your computer</small>
+                            </div>
+                            
+                            <!-- Option 3: Choose from Samples -->
+                            <div class="upload-option">
+                                <label><i class="fas fa-images"></i> Sample Images</label>
+                                <select id="sampleImages" onchange="selectSampleImage(this)">
+                                    <option value="">Choose a sample image</option>
+                                    <option value="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80">Pizza</option>
+                                    <option value="https://images.unsplash.com/photo-1565958011703-44f9829ba187?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80">Salad</option>
+                                    <option value="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80">Burger</option>
+                                    <option value="https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80">Pasta</option>
+                                    <option value="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80">Breakfast</option>
+                                    <option value="https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80">Dessert</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Hidden field to store final image URL -->
+                        <input type="hidden" id="itemImage" value="">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Item Name *</label>
+                    <input type="text" id="itemName" required placeholder="e.g., Grilled Salmon">
+                </div>
+
+                <div class="form-group">
+                    <label>Description *</label>
+                    <textarea id="itemDescription" rows="3" required placeholder="Describe the dish..."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Price *</label>
+                        <input type="number" id="itemPrice" step="0.01" min="0.01" required placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Prep Time (minutes)</label>
+                        <input type="number" id="itemPrepTime" min="1" value="15">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Category *</label>
+                    <select id="itemCategory" required>
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="itemSpecial">
+                        <label for="itemSpecial">Mark as Special</label>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="itemAvailable" checked>
+                        <label for="itemAvailable">Available</label>
+                    </div>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="button" onclick="closeModal()" class="btn-cancel">Cancel</button>
+                    <button type="submit" class="btn-submit">Save Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    <!-- Add Category Modal -->
+    <div id="addCategoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus"></i> Add New Category</h3>
+                <button onclick="closeModal()" class="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="categoryForm">
+                    <div class="form-group">
+                        <label>Category Name *</label>
+                        <input type="text" id="categoryName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="categoryDescription" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Icon Class (FontAwesome)</label>
+                        <input type="text" id="categoryIcon" placeholder="fas fa-utensils">
+                    </div>
+                    <div class="form-buttons">
+                        <button type="button" onclick="closeModal()" class="btn-cancel">Cancel</button>
+                        <button type="submit" class="btn-submit">Add Category</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+    <!-- Add/Edit Table Modal -->
+<div id="addTableModal" class="modal">
+    <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-header">
+            <h3><i class="fas fa-chair"></i> Add New Table</h3>
+            <button onclick="closeModal()" class="close-modal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="tableForm" onsubmit="return saveTable(event)">
+                <div class="form-group">
+                    <label>Table Number / Name *</label>
+                    <input type="text" id="tableNumberInput" required 
+                           placeholder="e.g., Table 5, Booth A2, Room 302">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Capacity (seats)</label>
+                        <input type="number" id="tableCapacity" min="1" value="4">
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" id="tableLocation" placeholder="e.g., Indoor, Patio, VIP">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="tableNotes" rows="2" placeholder="e.g., Near window, Non-smoking"></textarea>
+                </div>
+                <div class="form-buttons">
+                    <button type="button" onclick="closeModal()" class="btn-cancel">Cancel</button>
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-save"></i> Save Table
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- QR Code Display Modal -->
+<div id="qrModal" class="modal">
+    <div class="modal-content" style="max-width: 450px; text-align:center;">
+        <div class="modal-header">
+            <h3><i class="fas fa-qrcode"></i> Table QR Code</h3>
+            <button onclick="closeModal()" class="close-modal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <h2 id="qrTableName" style="margin-bottom:10px;color:#2c3e50;"></h2>
+            <p id="qrTableMeta" style="color:#666;margin-bottom:20px;font-size:14px;"></p>
+            
+            <div id="qrCodeContainer" style="display:inline-block;padding:20px;background:white;border-radius:15px;box-shadow:0 5px 20px rgba(0,0,0,0.1);"></div>
+            
+            <div class="qr-instructions" style="margin-top:20px;text-align:left;background:#f8f9fa;padding:15px;border-radius:10px;font-size:14px;">
+                <strong><i class="fas fa-info-circle"></i> How to use:</strong>
+                <ol style="margin:10px 0 0 20px;color:#555;">
+                    <li>Print this QR code</li>
+                    <li>Place it on the table</li>
+                    <li>Customers scan it with their phone</li>
+                    <li>Their table number is auto-filled at checkout</li>
+                </ol>
+            </div>
+            
+            <div class="form-buttons" style="margin-top:20px;">
+                <button onclick="downloadQRCode()" class="btn-cancel" style="background:#3498db;">
+                    <i class="fas fa-download"></i> Download
+                </button>
+                <button onclick="printQRCode()" class="btn-submit">
+                    <i class="fas fa-print"></i> Print
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden QR libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Royal Hotel - Menu</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <i class="fas fa-crown"></i>
+                    <h1>Royal Hotel</h1>
+                </div>
+                <div class="nav-links">
+                    <a href="#menu" class="active">Menu</a>
+                    <a href="#categories">Categories</a>
+                    <a href="#specials">Specials</a>
+                    <a href="#orderTracking">My Orders</a>
+
+                    <a href="#contact">Contact</a>
+                    <!button class="btn-admin" onclick="window.location.href='admin.html'">
+                        <!i class="fas fa-lock"></i> 
+                    <!/button>
+                </div>
+                <div class="cart-icon" onclick="toggleCart()">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </div>
+                <div class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2>Delicious Dining Experience</h2>
+                <p>Experience culinary excellence with our carefully crafted menu</p>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search for dishes..." oninput="filterMenu()">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="categories" id="categories">
+        <div class="container">
+            <h2 class="section-title">Our Categories</h2>
+            <div class="category-filter" id="categoryFilter">
+                <!-- Categories will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section class="menu-section" id="menu">
+        <div class="container">
+            <h2 class="section-title">Our Menu</h2>
+            <div class="menu-filters">
+                <div class="filter-group">
+                    <label>Sort by:</label>
+                    <select id="sortBy" onchange="renderMenuItems()">
+                        <option value="name">Name (A-Z)</option>
+                        <option value="price-low">Price (Low to High)</option>
+                        <option value="price-high">Price (High to Low)</option>
+                        <option value="newest">Newest First</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Category:</label>
+                    <select id="categorySelect" onchange="renderMenuItems()">
+                        <option value="all">All Categories</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Menu Items Container -->
+            <div class="menu-grid" id="menuGrid">
+                <!-- Menu items will be loaded here -->
+            </div>
+
+            <!-- Cart Sidebar -->
+            <div class="cart-sidebar" id="cartSidebar">
+                <div class="cart-header">
+                    <h3>Your Order</h3>
+                    <button class="close-cart" onclick="closeCart()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="cart-items" id="cartItems">
+                    <!-- Cart items will be loaded here -->
+                </div>
+                <div class="cart-total">
+                    <h4>Total: $<span id="cartTotal">0.00</span></h4>
+                    <button class="btn-checkout" onclick="checkout()">Checkout</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Specials -->
+    <section class="specials" id="specials">
+        <div class="container">
+            <h2 class="section-title">Today's Specials</h2>
+            <div class="specials-grid" id="specialsGrid">
+                <!-- Specials will be loaded here -->
+            </div>
+        </div>
+    </section>
+<!-- Order Tracking Section -->
+<section class="order-tracking" id="orderTracking">
+    <div class="container">
+        <h2 class="section-title">Track Your Orders</h2>
+        <div class="tracking-orders" id="trackingOrders">
+            <!-- User's orders will appear here -->
+        </div>
+    </div>
+</section>
+
+<!-- Checkout Modal (Table Number Selection) -->
+<div id="checkoutModal" class="modal">
+    <div class="modal-content" style="max-width: 450px;">
+        <div class="modal-header">
+            <h3><i class="fas fa-chair"></i> Confirm Your Order</h3>
+            <button onclick="closeCheckoutModal()" class="close-modal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Your Table / Sit Number *</label>
+                <input type="text" id="tableNumber" placeholder="e.g., Table 5, Booth A2, Room 302" required>
+                <small class="help-text">Enter where you're seated so we can deliver your order</small>
+            </div>
+            <div class="form-group">
+                <label>Your Name (optional)</label>
+                <input type="text" id="customerName" placeholder="e.g., John">
+            </div>
+            <div class="form-group">
+                <label>Special Notes (optional)</label>
+                <textarea id="orderNotes" rows="2" placeholder="e.g., No onions, extra sauce..."></textarea>
+            </div>
+            <div class="order-summary-mini" id="checkoutSummary">
+                <!-- Order summary will appear here -->
+            </div>
+            <div class="form-buttons">
+                <button type="button" onclick="closeCheckoutModal()" class="btn-cancel">Cancel</button>
+                <button type="button" onclick="confirmCheckout()" class="btn-submit">
+                    <i class="fas fa-check"></i> Place Order
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3><i class="fas fa-crown"></i> Royal Hotel</h3>
+                    <p>Experience luxury dining at its finest. Quality food served with excellence.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Info</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Gourmet Street, Food City</p>
+                    <p><i class="fas fa-phone"></i> +1 234 567 890</p>
+                    <p><i class="fas fa-envelope"></i> info@royalhotel.com</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Opening Hours</h4>
+                    <p>Monday - Friday: 7:00 AM - 11:00 PM</p>
+                    <p>Saturday - Sunday: 8:00 AM - 12:00 AM</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Royal Hotel. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
