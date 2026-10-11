@@ -442,14 +442,19 @@ function formatDate(dateString) {
 // ============================================================
 //  APP INITIALIZATION
 // ============================================================
+
 function initializeApp() {
     console.log('Initializing app…');
-    if (window.location.pathname.includes('admin.html')) {
+
+    const path = window.location.pathname.toLowerCase();
+
+    if (path.endsWith('/admin.html') || path === 'admin.html') {
         initializeAdminPage();
     } else {
         initializeCustomerPage();
     }
 }
+
 
 // ============================================================
 //  CUSTOMER PAGE
@@ -981,10 +986,18 @@ function getStepIcon(step) {
 // ============================================================
 //  TABLE MANAGEMENT & QR CODES
 // ============================================================
+
 function getTableFromURL() {
     const params = new URLSearchParams(window.location.search);
-    return params.get('table');
+    const table = params.get('table');
+
+    if (!table || !table.trim()) {
+        return null;
+    }
+
+    return table.trim();
 }
+
 getTableOrderURL(table)
 function showTableBanner(tableNumber) {
     const existing = document.getElementById('tableWelcomeBanner');
@@ -1087,24 +1100,30 @@ function renderTablesGrid() {
 }
 
 // Build the URL that a QR code points to
+
 function getTableOrderURL(table) {
-// Always direct QR codes to the customer menu page.
-const currentUrl = new URL(window.location.href);
-const customerUrl = new URL('index.html', currentUrl);
+    if (!table || table.number == null || table.number === '') {
+        console.error('Invalid table:', table);
+        return window.location.origin + window.location.pathname;
+    }
 
-```
-// Remove any admin query parameters or URL fragments.
-customerUrl.search = '';
-customerUrl.hash = '';
+    // Keep the website's current folder, including GitHub Pages subfolders.
+    const url = new URL(window.location.href);
+    const directory = url.pathname.substring(
+        0,
+        url.pathname.lastIndexOf('/') + 1
+    );
 
-// Preserve the table number for ordering.
-customerUrl.searchParams.set('table', table.number);
+    // QR codes must open the customer menu, not the admin page.
+    url.pathname = directory + 'index.html';
+    url.search = '';
+    url.hash = '';
+    url.searchParams.set('table', String(table.number));
 
-return customerUrl.href;
-```
-
+    return url.toString();
 }
 
+ 
 
 function openAddTableModal() {
     const modal = document.getElementById('addTableModal');
