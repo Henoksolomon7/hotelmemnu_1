@@ -404,7 +404,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="categoryForm">
+                <form id="categoryForm" onsubmit="return saveCategory(event)">
                     <div class="form-group">
                         <label>Category Name *</label>
                         <input type="text" id="categoryName" required>
@@ -508,7 +508,13 @@
 
 <!-- Hidden QR libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+<!-- Your Firebase project settings -->
+<script src="firebase-config.js"></script>
 
-    <script src="script.js"></script>
+<!-- Your app -->
+<script src="script.js"></script>
 </body>
 </html>
