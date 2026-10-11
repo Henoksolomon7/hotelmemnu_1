@@ -985,7 +985,7 @@ function getTableFromURL() {
     const params = new URLSearchParams(window.location.search);
     return params.get('table');
 }
-
+getTableOrderURL(table)
 function showTableBanner(tableNumber) {
     const existing = document.getElementById('tableWelcomeBanner');
     if (existing) existing.remove();
@@ -1088,12 +1088,23 @@ function renderTablesGrid() {
 
 // Build the URL that a QR code points to
 function getTableOrderURL(table) {
-    const baseUrl = window.location.href.split('?')[0].split('#')[0];
-    const menuUrl = baseUrl.includes('admin.html')
-        ? baseUrl.replace('admin.html', 'index.html')
-        : baseUrl;
-    return `${menuUrl}?table=${encodeURIComponent(table.number)}`;
+// Always direct QR codes to the customer menu page.
+const currentUrl = new URL(window.location.href);
+const customerUrl = new URL('index.html', currentUrl);
+
+```
+// Remove any admin query parameters or URL fragments.
+customerUrl.search = '';
+customerUrl.hash = '';
+
+// Preserve the table number for ordering.
+customerUrl.searchParams.set('table', table.number);
+
+return customerUrl.href;
+```
+
 }
+
 
 function openAddTableModal() {
     const modal = document.getElementById('addTableModal');
